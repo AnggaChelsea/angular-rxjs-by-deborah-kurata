@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
-import { Subscription, Observable, catchError, pipe, EMPTY } from 'rxjs';
+import { Subscription, Observable, catchError, pipe, EMPTY, combineLatest, map } from 'rxjs';
 import { ProductCategory } from '../product-categories/product-category';
 
 import { Product } from './product';
 import { ProductService } from './product.service';
+import { ProductCategoryService } from '../product-categories/product-category.service';
 
 @Component({
   templateUrl: './product-list.component.html',
@@ -18,13 +19,16 @@ export class ProductListComponent {
 
   // products: Product[] = [];
   // sub!: Subscription;
-  products$ = this.productService.products$.pipe(
-    catchError((err: any) => {
+  products$ = this.productService.productCategoryCombinan$.pipe(
+    catchError((err:any) => {
       this.errorMessage = err
       return EMPTY;
     })
   )
-  constructor(private productService: ProductService) { }
+
+
+
+  constructor(private productService: ProductService, private categoryService: ProductCategoryService) { }
 
   // ngOnDestroy(): void {
   //   this.sub.unsubscribe();

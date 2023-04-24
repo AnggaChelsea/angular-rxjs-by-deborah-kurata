@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Subscription } from 'rxjs';
+import { EMPTY, Subscription, catchError } from 'rxjs';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
@@ -14,20 +14,24 @@ export class ProductListAltComponent implements OnInit, OnDestroy {
   errorMessage = '';
   selectedProductId = 0;
 
-  products: Product[] = [];
-  sub!: Subscription;
-
+  // sub!: Subscription;
+  products$ = this.productService.products$.pipe(
+    catchError((err: any) => {
+      this.errorMessage = err
+      return EMPTY
+    })
+  )
   constructor(private productService: ProductService) { }
 
   ngOnInit(): void {
-    this.sub = this.productService.getProducts().subscribe({
-      next: products => this.products = products,
-      error: err => this.errorMessage = err
-    });
+    // this.sub = this.productService.getProducts().subscribe({
+    //   next: products => this.products = products,
+    //   error: err => this.errorMessage = err
+    // });
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    // this.sub.unsubscribe();
   }
 
   onSelected(productId: number): void {
